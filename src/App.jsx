@@ -1,0 +1,93 @@
+
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import './App.css'
+import Loader from './components/Loader/Loader';
+
+function App() {
+
+
+  const [obj, setObj] = useState({})
+  const [lon, setLon] = useState(0)
+  const [lat, setLat] = useState(0)
+  const [tempF, setTempF] = useState(true)
+
+ 
+
+  const position = (pos) => {
+    setLat(pos.coords.latitude)
+    setLon(pos.coords.longitude)
+  }
+
+  const API_KEY = 'd09c8cd08c3ebc07e16f93fb39eef7c1'
+
+ useEffect(()=> {
+
+   navigator.geolocation.getCurrentPosition(position)
+
+   
+  }, [])
+
+  useEffect(()=>{
+
+    if(lat !== 0){
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`)
+      .then((res)=> {
+        setObj(res.data)
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    }
+  }, [lat])
+
+  const handleTemp = () => {
+    setTempF(!tempF)
+  }
+
+  return (
+    <div className="App">
+    { obj !== undefined ? 
+    <div className="container">
+      <div className="top-section">
+        <div className="location">
+          <h3 className='name'>{obj.name}</h3>
+          <h4>{obj.sys?.country}</h4>
+        </div>
+        <div className='temp'>
+          <h1>{tempF ? 
+          `${((obj.main?.temp) - 273.15).toFixed(1)} °C` : 
+          `${(((obj.main?.temp) - 273.15) * 9/5 + 32).toFixed(1)} °F`
+          }
+          </h1>
+          <img src={`http://openweathermap.org/img/wn/${obj.weather?.[0].icon}.png`} alt="" />
+          <h2>{obj.weather?.[0].main}</h2>
+          <button className='btn' onClick={handleTemp}>{tempF ? 'to °F' : 'to °C'}</button>
+        </div>
+      </div>
+      <div className='low-section'>
+        <div className="feels-like">
+          <h3>Feels-Like</h3>
+          <h3>{tempF ? 
+          `${((obj.main?.feels_like) - 273.15).toFixed(1)} °C` : 
+          `${(((obj.main?.feels_like) - 273.15) * 9/5 + 32).toFixed(1)} °F`
+          }
+          </h3>
+        </div>
+        <div className="humidity">
+          <h3>Humidity</h3>
+          <h3>{obj.main?.humidity} %</h3>
+        </div>
+        <div className="wind">
+          <h3>Wind</h3>
+          <h3>{obj.wind?.speed} mps</h3>
+        </div>
+      </div>
+    </div>
+
+  : <Loader/>}
+  </div>
+  
+)}
+
+export default App
