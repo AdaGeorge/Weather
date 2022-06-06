@@ -1,9 +1,15 @@
+.container-loader{
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    align-items: center;
+}
+
 .loader{
     display: flex;
     width: 100%;
     justify-content: center;
-    align-items: center;
-    height: 5em;
+    height: 3em;
     transform-origin: bottom center;
     animation: rotate 5s linear infinite;
 }
@@ -15,13 +21,13 @@
     width: 40px;
     border-radius: 50%;
     transform: scale(0);
-    animation: grow 2s linear infinite;
-    margin: -10px;
+    animation: grow 1.5s linear infinite;
+    margin: -12px;
 }
 
 .circle:nth-child(2){
     background-color: palevioletred;
-    animation-delay: 6.5s;
+    animation-delay: 0.75s;
 }
 
 @keyframes rotate {
